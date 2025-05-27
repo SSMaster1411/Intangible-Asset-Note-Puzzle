@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Coca-Cola Intangible Puzzle</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      color: #cc0000;
+      text-align: center;
+    }
+    #guide-image {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      width: 120px;
+      border: 2px solid #ccc;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      background: white;
+      z-index: 10;
+    }
+    #container {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      gap: 20px;
+    }
+    #puzzle-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 120px);
+      grid-template-rows: repeat(3, 120px);
+      gap: 2px;
+    }
+    .slot {
+      width: 120px;
+      height: 120px;
+      border: 1px dashed #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #pieces-container {
+      width: 380px;
+      display: grid;
+      grid-template-columns: repeat(3, 120px);
+      grid-template-rows: repeat(3, 120px);
+      gap: 10px;
+      border: 1px solid #ccc;
+      padding: 5px;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      overflow-wrap: break-word;
+    }
+    .piece {
+      width: 120px;
+      height: 120px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      background-image: url('https://raw.githubusercontent.com/SSMaster1411/Infographic/refs/heads/main/Coca-Cola%20Infographic.png.png');
+      background-size: 360px 360px;
+      cursor: pointer;
+      transition: border 0.2s;
+    }
+    .selected {
+      border: 2px solid blue;
+    }
+    .locked {
+      cursor: default;
+      border: 2px solid green !important;
+    }
+    #thought-bubble {
+      position: absolute;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      max-width: 250px;
+      font-size: 13px;
+      display: none;
+      z-index: 20;
+      pointer-events: none;
+    }
+    #overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 32px;
+      z-index: 999;
+      display: none;
+    }
+    #overlay img {
+      max-width: 90vw;
+      max-height: 80vh;
+      object-fit: contain;
+      border: 6px solid #fff;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <img id="guide-image" src="https://raw.githubusercontent.com/SSMaster1411/Infographic/refs/heads/main/Coca-Cola%20Infographic.png.png" alt="Guide Image" />
+
+  <h1>Intangible Assets Puzzle</h1>
+
+  <div id="container">
+    <div id="puzzle-grid"></div>
+    <div id="pieces-container"></div>
+  </div>
+
+  <div id="thought-bubble"></div>
+
+  <div id="overlay">
+    <img src="https://raw.githubusercontent.com/SSMaster1411/Infographic/refs/heads/main/Coca-Cola%20Infographic.png.png" alt="Full Puzzle" />
+    <div>Coca-Cola's Intangible Note Complete</div>
+  </div>
+
+  <script>
+    const size = 3;
+    const totalPieces = size * size;
+    const piecesContainer = document.getElementById('pieces-container');
+    const puzzleGrid = document.getElementById('puzzle-grid');
+    const thoughtBubble = document.getElementById('thought-bubble');
+    const overlay = document.getElementById('overlay');
+    let selectedPiece = null;
+
+    const messages = [
+      "Coca Cola invests heavily in advertising - this builds brand recognition, another intangible asset!",
+      "Did you know that Coca-Cola's brand name alone is one of its most valuable intangible assets!",
+      "Trademarks help Coca-Cola stand out in the market - this is an intangible asset!",
+      "Trade secrets like the formula of Coca-Cola are priceless intangible assets!"
+    ];
+
+    // Shuffle helper function
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function createPuzzle() {
+      // Create slots on left
+      for (let i = 0; i < totalPieces; i++) {
+        const slot = document.createElement('div');
+        slot.className = 'slot';
+        slot.dataset.index = i;
+        slot.addEventListener('click', () => {
+          if (selectedPiece && !slot.firstChild) {
+            const correctIndex = parseInt(slot.dataset.index);
+            const pieceIndex = parseInt(selectedPiece.dataset.index);
+            if (correctIndex === pieceIndex) {
+              slot.appendChild(selectedPiece);
+              selectedPiece.classList.remove('selected');
+              selectedPiece.classList.add('locked');
+              selectedPiece = null;
+              checkPuzzle();
+            } else {
+              alert("Incorrect spot, try again.");
+              piecesContainer.appendChild(selectedPiece);
+              selectedPiece.classList.remove('selected');
+              selectedPiece = null;
+            }
+          }
+        });
+        puzzleGrid.appendChild(slot);
+      }
+
+      // Prepare pieces indices and shuffle them
+      let indices = [];
+      for (let i = 0; i < totalPieces; i++) indices.push(i);
+      shuffleArray(indices);
+
+      // Create shuffled pieces on right
+      indices.forEach(i => {
+        const piece = document.createElement('div');
+        piece.className = 'piece';
+        piece.dataset.index = i;
+        const row = Math.floor(i / size);
+        const col = i % size;
+        piece.style.backgroundPosition = `-${col * 120}px -${row * 120}px`;
+
+        piece.addEventListener('click', (e) => {
+          if (piece.classList.contains('locked')) return;
+          if (selectedPiece) selectedPiece.classList.remove('selected');
+          selectedPiece = piece;
+          piece.classList.add('selected');
+          showThoughtBubble(e.clientX, e.clientY);
+        });
+        piecesContainer.appendChild(piece);
+      });
+    }
+
+    function checkPuzzle() {
+      const slots = document.querySelectorAll('.slot');
+      let correct = 0;
+      slots.forEach((slot, i) => {
+        if (slot.firstChild && parseInt(slot.firstChild.dataset.index) === i) {
+          correct++;
+        }
+      });
+      if (correct === totalPieces) {
+        overlay.style.display = 'flex';
+      }
+    }
+
+    function showThoughtBubble(x, y) {
+      const message = messages[Math.floor(Math.random() * messages.length)];
+      thoughtBubble.textContent = message;
+      thoughtBubble.style.left = `${x + 10}px`;
+      thoughtBubble.style.top = `${y - 30}px`;
+      thoughtBubble.style.display = 'block';
+
+      clearTimeout(thoughtBubble.timeout);
+      thoughtBubble.timeout = setTimeout(() => {
+        thoughtBubble.style.display = 'none';
+      }, 4000);
+    }
+
+    createPuzzle();
+  </script>
+
+</body>
+</html>
