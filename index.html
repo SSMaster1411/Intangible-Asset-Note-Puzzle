@@ -3,130 +3,318 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Coca-Cola Intangible Puzzle</title>
+  <title>Coca-Cola Intangible Assets Puzzle</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --coke-red: #F40009;
+      --coke-dark-red: #D80009;
+      --coke-white: #FFFFFF;
+      --coke-black: #1A1A1A;
+      --coke-silver: #E5E5E5;
+    }
     body {
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
+      font-family: 'Open Sans', Arial, sans-serif;
+      background: var(--coke-silver);
       margin: 0;
-      padding: 20px;
+      padding: 0;
+      color: var(--coke-black);
+      background-image: url('https://www.transparenttextures.com/patterns/white-texture.png');
+    }
+    .header {
+      background: var(--coke-red);
+      padding: 20px 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      position: relative;
+      z-index: 5;
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 100%;
+      height: 10px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.1), transparent);
     }
     h1 {
-      color: #cc0000;
+      color: var(--coke-white);
       text-align: center;
+      margin: 0;
+      font-family: 'Pacifico', cursive;
+      font-size: 2.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    }
+    .subtitle {
+      color: var(--coke-white);
+      text-align: center;
+      margin: 5px 0 0;
+      font-weight: 400;
+      font-size: 1.1rem;
     }
     #guide-image {
       position: fixed;
-      top: 10px;
-      left: 10px;
-      width: 120px;
-      border: 2px solid #ccc;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      background: white;
+      top: 20px;
+      left: 20px;
+      width: 150px;
+      border: 3px solid var(--coke-white);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      background: var(--coke-white);
       z-index: 10;
+      transition: transform 0.3s;
+    }
+    #guide-image:hover {
+      transform: scale(1.05);
+    }
+    .main-content {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .game-container {
+      background: var(--coke-white);
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .game-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      background: var(--coke-red);
     }
     #container {
       display: flex;
       justify-content: center;
       margin-top: 20px;
-      gap: 20px;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .puzzle-section {
+      text-align: center;
+    }
+    .section-title {
+      font-family: 'Roboto Condensed', sans-serif;
+      color: var(--coke-red);
+      margin-bottom: 15px;
+      font-size: 1.3rem;
+      text-transform: uppercase;
     }
     #puzzle-grid {
       display: grid;
-      grid-template-columns: repeat(3, 120px);
-      grid-template-rows: repeat(3, 120px);
-      gap: 2px;
+      grid-template-columns: repeat(3, 140px);
+      grid-template-rows: repeat(3, 140px);
+      gap: 4px;
+      background: var(--coke-white);
+      border: 2px solid var(--coke-red);
+      border-radius: 8px;
+      padding: 5px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
     .slot {
-      width: 120px;
-      height: 120px;
-      border: 1px dashed #ccc;
+      width: 140px;
+      height: 140px;
+      border: 2px dashed var(--coke-silver);
       display: flex;
       align-items: center;
       justify-content: center;
+      background: rgba(244, 0, 9, 0.05);
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    .slot:hover {
+      background: rgba(244, 0, 9, 0.1);
     }
     #pieces-container {
-      width: 380px;
+      width: 452px;
       display: grid;
-      grid-template-columns: repeat(3, 120px);
-      grid-template-rows: repeat(3, 120px);
-      gap: 10px;
-      border: 1px solid #ccc;
-      padding: 5px;
-      background: #fff;
+      grid-template-columns: repeat(3, 140px);
+      grid-template-rows: repeat(3, 140px);
+      gap: 8px;
+      border: 2px solid var(--coke-red);
+      border-radius: 8px;
+      padding: 10px;
+      background: var(--coke-white);
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      overflow-wrap: break-word;
     }
     .piece {
-      width: 120px;
-      height: 120px;
+      width: 140px;
+      height: 140px;
       box-sizing: border-box;
-      border: 1px solid #ccc;
+      border: 2px solid var(--coke-silver);
       background-image: url('https://raw.githubusercontent.com/SSMaster1411/Infographic/refs/heads/main/Coca-Cola%20Infographic.png.png');
-      background-size: 360px 360px;
+      background-size: 420px 420px;
       cursor: pointer;
-      transition: border 0.2s;
+      transition: all 0.3s;
+      border-radius: 4px;
+    }
+    .piece:hover {
+      transform: scale(1.02);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      border-color: var(--coke-red);
     }
     .selected {
-      border: 2px solid blue;
+      border: 3px solid var(--coke-red);
+      transform: scale(1.03);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
     }
     .locked {
       cursor: default;
-      border: 2px solid green !important;
+      border: 3px solid #4CAF50 !important;
+      box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
     }
     #thought-bubble {
       position: absolute;
-      background: #fff;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      max-width: 250px;
-      font-size: 13px;
+      background: var(--coke-white);
+      border: 2px solid var(--coke-red);
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+      max-width: 280px;
+      font-size: 14px;
       display: none;
       z-index: 20;
       pointer-events: none;
+      font-weight: 500;
+      color: var(--coke-black);
+    }
+    #thought-bubble::before {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: var(--coke-white);
+      border-left: 2px solid var(--coke-red);
+      border-bottom: 2px solid var(--coke-red);
+      bottom: -11px;
+      left: 30px;
+      transform: rotate(-45deg);
     }
     #overlay {
       position: fixed;
       top: 0; left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0,0,0,0.85);
+      background: rgba(0,0,0,0.9);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       color: white;
-      font-size: 32px;
+      font-size: 2.5rem;
       z-index: 999;
       display: none;
+      font-family: 'Roboto Condensed', sans-serif;
+      text-align: center;
     }
     #overlay img {
       max-width: 90vw;
-      max-height: 80vh;
+      max-height: 70vh;
       object-fit: contain;
-      border: 6px solid #fff;
-      margin-bottom: 20px;
+      border: 8px solid var(--coke-white);
+      border-radius: 12px;
+      margin-bottom: 30px;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.4);
+    }
+    .coke-button {
+      background: var(--coke-red);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 1rem;
+      border-radius: 30px;
+      cursor: pointer;
+      font-family: 'Roboto Condensed', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 20px;
+      transition: all 0.3s;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .coke-button:hover {
+      background: var(--coke-dark-red);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+    .footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+      color: var(--coke-black);
+      font-size: 0.9rem;
+      border-top: 1px solid var(--coke-silver);
+    }
+    .logo {
+      width: 120px;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 768px) {
+      #container {
+        flex-direction: column;
+        align-items: center;
+      }
+      h1 {
+        font-size: 1.8rem;
+      }
+      #puzzle-grid, #pieces-container {
+        grid-template-columns: repeat(3, 100px);
+        grid-template-rows: repeat(3, 100px);
+      }
+      .slot, .piece {
+        width: 100px;
+        height: 100px;
+      }
+      #pieces-container {
+        width: 332px;
+      }
+      #guide-image {
+        width: 100px;
+        top: 10px;
+        left: 10px;
+      }
     }
   </style>
 </head>
 <body>
 
+  <div class="header">
+    <h1>Coca-Cola</h1>
+    <p class="subtitle">Intangible Assets Puzzle Challenge</p>
+  </div>
+
   <img id="guide-image" src="https://raw.githubusercontent.com/SSMaster1411/Infographic/refs/heads/main/Coca-Cola%20Infographic.png.png" alt="Guide Image" />
 
-  <h1>Intangible Assets Puzzle</h1>
-
-  <div id="container">
-    <div id="puzzle-grid"></div>
-    <div id="pieces-container"></div>
+  <div class="main-content">
+    <div class="game-container">
+      <div id="timer" style="text-align:center; font-size:1.2rem; font-weight:bold; color:var(--coke-red); margin-top:20px;"></div>
+      <div id="container">
+        <div class="puzzle-section">
+          <h3 class="section-title">Puzzle Board</h3>
+          <div id="puzzle-grid"></div>
+        </div>
+        <div class="puzzle-section">
+          <h3 class="section-title">Puzzle Pieces</h3>
+          <div id="pieces-container"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div id="thought-bubble"></div>
 
   <div id="overlay">
     <img src="https://raw.githubusercontent.com/SSMaster1411/Infographic/refs/heads/main/Coca-Cola%20Infographic.png.png" alt="Full Puzzle" />
-    <div>Coca-Cola's Intangible Note Complete</div>
+    <div>Congratulations!</div>
+    <div style="font-size:1.5rem; margin-top:10px;">Coca-Cola's intangible assets note has been unlocked!</div>
+    <button class="coke-button" onclick="location.reload()">Play Again</button>
   </div>
 
   <script>
@@ -136,16 +324,19 @@
     const puzzleGrid = document.getElementById('puzzle-grid');
     const thoughtBubble = document.getElementById('thought-bubble');
     const overlay = document.getElementById('overlay');
+    const timerDisplay = document.getElementById('timer');
     let selectedPiece = null;
+    let timeLeft = 120;
 
     const messages = [
-      "Coca Cola invests heavily in advertising - this builds brand recognition, another intangible asset!",
-      "Did you know that Coca-Cola's brand name alone is one of its most valuable intangible assets!",
-      "Trademarks help Coca-Cola stand out in the market - this is an intangible asset!",
-      "Trade secrets like the formula of Coca-Cola are priceless intangible assets!"
+      "Coca-Cola invests over $4 billion annually in marketing to build its brand - its most valuable intangible asset!",
+      "The Coca-Cola brand is worth over $80 billion - making it one of the world's most valuable intangible assets!",
+      "Coca-Cola's secret formula is protected as a trade secret - a crucial intangible asset since 1886!",
+      "With nearly 20,000 trademarks worldwide, Coca-Cola's IP portfolio is a key intangible asset!",
+      "Coca-Cola's bottling network and relationships represent valuable franchise agreements - intangible assets!",
+      "Coca-Cola's customer loyalty and brand recognition are priceless intangible assets!"
     ];
 
-    // Shuffle helper function
     function shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -155,7 +346,6 @@
     }
 
     function createPuzzle() {
-      // Create slots on left
       for (let i = 0; i < totalPieces; i++) {
         const slot = document.createElement('div');
         slot.className = 'slot';
@@ -168,36 +358,49 @@
               slot.appendChild(selectedPiece);
               selectedPiece.classList.remove('selected');
               selectedPiece.classList.add('locked');
+              selectedPiece.style.transform = 'none';
               selectedPiece = null;
               checkPuzzle();
+              const successSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3');
+              successSound.volume = 0.3;
+              successSound.play();
             } else {
-              alert("Incorrect spot, try again.");
+              const errorSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3');
+              errorSound.volume = 0.3;
+              errorSound.play();
               piecesContainer.appendChild(selectedPiece);
               selectedPiece.classList.remove('selected');
+              selectedPiece.style.transform = 'none';
               selectedPiece = null;
+              slot.style.animation = 'shake 0.5s';
+              setTimeout(() => { slot.style.animation = ''; }, 500);
             }
           }
         });
         puzzleGrid.appendChild(slot);
       }
 
-      // Prepare pieces indices and shuffle them
       let indices = [];
       for (let i = 0; i < totalPieces; i++) indices.push(i);
       shuffleArray(indices);
 
-      // Create shuffled pieces on right
       indices.forEach(i => {
         const piece = document.createElement('div');
         piece.className = 'piece';
         piece.dataset.index = i;
         const row = Math.floor(i / size);
         const col = i % size;
-        piece.style.backgroundPosition = `-${col * 120}px -${row * 120}px`;
+        piece.style.backgroundPosition = `-${col * 140}px -${row * 140}px`;
 
         piece.addEventListener('click', (e) => {
           if (piece.classList.contains('locked')) return;
-          if (selectedPiece) selectedPiece.classList.remove('selected');
+          const selectSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3');
+          selectSound.volume = 0.2;
+          selectSound.play();
+          if (selectedPiece) {
+            selectedPiece.classList.remove('selected');
+            selectedPiece.style.transform = 'none';
+          }
           selectedPiece = piece;
           piece.classList.add('selected');
           showThoughtBubble(e.clientX, e.clientY);
@@ -215,24 +418,71 @@
         }
       });
       if (correct === totalPieces) {
-        overlay.style.display = 'flex';
+        const completeSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3');
+        completeSound.volume = 0.4;
+        completeSound.play();
+        setTimeout(() => {
+          overlay.style.display = 'flex';
+        }, 1000);
       }
     }
 
     function showThoughtBubble(x, y) {
       const message = messages[Math.floor(Math.random() * messages.length)];
       thoughtBubble.textContent = message;
-      thoughtBubble.style.left = `${x + 10}px`;
-      thoughtBubble.style.top = `${y - 30}px`;
+      thoughtBubble.style.left = `${x + 20}px`;
+      thoughtBubble.style.top = `${y - 40}px`;
       thoughtBubble.style.display = 'block';
-
       clearTimeout(thoughtBubble.timeout);
       thoughtBubble.timeout = setTimeout(() => {
         thoughtBubble.style.display = 'none';
-      }, 4000);
+      }, 5000);
     }
 
+    function updateTimer() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      timerDisplay.textContent = `Time Left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    }
+
+    function checkPuzzleOnTimeout() {
+      const slots = document.querySelectorAll('.slot');
+      let correct = 0;
+      slots.forEach((slot, i) => {
+        if (slot.firstChild && parseInt(slot.firstChild.dataset.index) === i) {
+          correct++;
+        }
+      });
+      if (correct < totalPieces) {
+        overlay.style.display = 'flex';
+      }
+    }
+
+    function startTimer() {
+      updateTimer();
+      const timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimer();
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          checkPuzzleOnTimeout();
+        }
+      }, 1000);
+    }
+
+    // Add shake animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20%, 60% { transform: translateX(-5px); }
+        40%, 80% { transform: translateX(5px); }
+      }
+    `;
+    document.head.appendChild(style);
+
     createPuzzle();
+    startTimer();
   </script>
 
 </body>
